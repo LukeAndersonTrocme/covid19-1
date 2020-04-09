@@ -1,0 +1,113 @@
+---
+title: "Covid in Quebec"
+author:
+- name: Luke Anderson-Trocmé,
+  affiliation:
+  - &cruk Department of Human Genetics, McGill University,  Montreal, Canada
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_notebook:
+    df_print: paged
+    code_folding: show
+    toc: yes
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+# Load Libraries and set paths
+```{r setup}
+library(ggplot2) # plotting functions
+library(ggrepel) # repel label text
+library(dplyr) # data wrangling
+library(tidyverse)
+
+#Set Path
+covidPath <- '~/Documents/sahir_covid19/data/'
+covidFigPath <- '~/Documents/sahir_covid19/figures/'
+
+```
+# Cases by Age
+```{r}
+##Currently hardcoding the file upload, but could find most recent file with title_date.csv
+
+cases_by_age <- read.csv(paste0(covidPath,"cases_by_age_QC_2020-04-03.csv"))
+cases_by_age
+
+ggplot(cases_by_age,
+       aes(x = Groupe.d.âge,
+           y = value,
+           color = type,
+           group = type)) +
+  geom_path(size = 2) +
+  theme_bw() +
+  labs(x = "Date",
+       title = "Cases by age in Quebec") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(paste0(covidFigPath,"cases_by_age.jpg"), height = 7, width = 10)
+```
+# Cumulative Cases and Negatives
+```{r}
+cumulative_case_and_negatives <- read.csv(paste0(covidPath,"cumulative_case_and_negatives_QC_2020-04-03.csv"))
+cumulative_case_and_negatives
+
+ggplot(cumulative_case_and_negatives,
+       aes(x = as.Date(Date),
+           y = value,
+           color = type,
+           group = type)) +
+  geom_path(size = 2) +
+  theme_bw() +
+  scale_y_log10() +
+  labs(x = "Date",
+       title = "Cumulative Cases and Negative COVID19 Tests in Quebec") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(paste0(covidFigPath,"cumulative_case_and_negatives.jpg"), height = 7, width = 10)
+```
+# Cumulative Deaths
+```{r}
+cumulative_deaths_QC <- read.csv(paste0(covidPath,"cumulative_deaths_QC_2020-04-03.csv"))
+cumulative_deaths_QC
+
+ggplot() +
+  geom_line(data = cumulative_deaths_QC,
+       aes(x = as.Date(Date),
+           y = value,
+           color = type,
+           group = type),
+       size = 2) +
+  theme_bw() +
+  labs(x = "Date",
+       title = "Cumulative COVID19 Deaths in Quebec") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(paste0(covidFigPath,"cumulative_deaths_QC.jpg"), height = 7, width = 10)
+```
+
+# Cumulative Hospitalizations
+```{r}
+cumulative_hospitalisations_QC <- read.csv(paste0(covidPath,"cumulative_hospitalisations_QC_2020-04-03.csv"))
+cumulative_hospitalisations_QC
+
+ggplot() +
+  geom_line(data = cumulative_hospitalisations_QC,
+       aes(x = as.Date(Date),
+           y = value,
+           color = type,
+           group = type),
+       size = 2) +
+  theme_bw() +
+  labs(x = "Date",
+       title = "Cumulative COVID19 Hospitalizations in Quebec") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave(paste0(covidFigPath,"cumulative_hospitalisations_QC.jpg"), height = 7, width = 10)
+```
+
+
+```{r}
+sessionInfo()
+```
+
